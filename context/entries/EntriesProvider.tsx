@@ -11,19 +11,19 @@ const Entries_INITIAL_STATE: EntriesState = {
 	entries: [
 		{
 			_id: uuidv4(),
-			description: "This is a fake description",
+			description: "Pending: This is a fake description",
 			status: "pending",
 			createdAt: Date.now(),
 		},
 		{
 			_id: uuidv4(),
-			description: "This is a fake description 2",
+			description: "In-progress: This is a fake description 2",
 			status: "in-progress",
 			createdAt: Date.now() - 1000000,
 		},
 		{
 			_id: uuidv4(),
-			description: "This is a fake description 3",
+			description: "Finished: This is a fake description 3",
 			status: "finished",
 			createdAt: Date.now() - 100000,
 		},

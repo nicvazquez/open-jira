@@ -19,10 +19,30 @@ export default function handler(
 		case "PUT":
 			return updateEntry(req, res);
 
+		case "GET":
+			return getEntry(req, res);
+
 		default:
 			return res.status(400).json({ message: "Invalid method " });
 	}
 }
+
+const getEntry = async (req: NextApiRequest, res: NextApiResponse) => {
+	const { id } = req.query;
+
+	await db.connect();
+
+	const entryToGet = await Entry.findById(id);
+	await db.disconnect();
+
+	if (!entryToGet) {
+		return res
+			.status(400)
+			.json({ message: "There is no entry with this ID " + id });
+	}
+
+	return res.status(200).json(entryToGet);
+};
 
 const updateEntry = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
 	const { id } = req.query;

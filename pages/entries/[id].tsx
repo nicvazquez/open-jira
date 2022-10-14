@@ -28,9 +28,9 @@ interface Props {
 	entry: Entry;
 }
 
-export const EntryPage: FC = (props) => {
-	const [inputValue, setInputValue] = useState("");
-	const [status, setStatus] = useState<EntryStatus>("pending");
+export const EntryPage: FC<Props> = ({ entry }) => {
+	const [inputValue, setInputValue] = useState(entry.description);
+	const [status, setStatus] = useState<EntryStatus>(entry.status);
 	const [touched, setTouched] = useState(false);
 
 	const isNotValid = useMemo(
@@ -49,13 +49,13 @@ export const EntryPage: FC = (props) => {
 	const onSave = () => {};
 
 	return (
-		<Layout title="...">
+		<Layout title={inputValue.substring(0, 20) + "..."}>
 			<Grid container justifyContent="center" sx={{ marginTop: 2 }}>
 				<Grid item xs={12} sm={8} md={6}>
 					<Card>
 						<CardHeader
 							title={`Entry: ${inputValue}`}
-							subheader={`Created ... minutes ago`}
+							subheader={`Created ${entry.createdAt} minutes ago`}
 						/>
 
 						<CardContent>
@@ -136,7 +136,7 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
 
 	return {
 		props: {
-			entry: entry,
+			entry,
 		},
 	};
 };

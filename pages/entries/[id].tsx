@@ -1,4 +1,5 @@
-import { ChangeEvent, useMemo, useState } from "react";
+import { ChangeEvent, FC, useMemo, useState } from "react";
+import { GetServerSideProps } from "next";
 import SaveOutlined from "@mui/icons-material/SaveOutlined";
 import DeleteOutlined from "@mui/icons-material/DeleteOutlined";
 import {
@@ -18,11 +19,16 @@ import {
 	IconButton,
 } from "@mui/material";
 import { Layout } from "../../components/layouts";
-import { EntryStatus } from "../../interfaces";
+import { Entry, EntryStatus } from "../../interfaces";
+import { dbEntries } from "../../database";
 
 const validStatus: EntryStatus[] = ["pending", "in-progress", "finished"];
 
-export const EntryPage = () => {
+interface Props {
+	entry: Entry;
+}
+
+export const EntryPage: FC = (props) => {
 	const [inputValue, setInputValue] = useState("");
 	const [status, setStatus] = useState<EntryStatus>("pending");
 	const [touched, setTouched] = useState(false);
@@ -109,6 +115,30 @@ export const EntryPage = () => {
 			</IconButton>
 		</Layout>
 	);
+};
+
+// You should use getServerSideProps when:
+// - Only if you need to pre-render a page whose data must be fetched at request time
+
+export const getServerSideProps: GetServerSideProps = async ({ params }) => {
+	const { id } = params as { id: string };
+
+	const entry = await dbEntries.getEntryById(id);
+
+	if (!entry) {
+		return {
+			redirect: {
+				destination: "/",
+				permanent: false,
+			},
+		};
+	}
+
+	return {
+		props: {
+			entry: entry,
+		},
+	};
 };
 
 export default EntryPage;
